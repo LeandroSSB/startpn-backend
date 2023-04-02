@@ -22,7 +22,7 @@ export default class Users extends Model {
           type: DataTypes.STRING
         },
         accountImage: {
-          type: DataTypes.BLOB
+          type: DataTypes.STRING(1500)
         },
       },
       {

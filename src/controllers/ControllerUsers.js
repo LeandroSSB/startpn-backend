@@ -17,7 +17,7 @@ class ControllerUser {
         
       const {hashedPassword, ...data} = user.get()
       
-      return res.send(data)
+      return res.status(200).send(data)
     }catch(e) {
       return res.status(500).json({ error: e.message })
     }
@@ -26,7 +26,8 @@ class ControllerUser {
   async postUser(req, res){
     try {
       const { password, } = req.body
-      
+      console.log(req.body)
+
       const hashed = bcrypt.hashSync(password, 10)
 
       const newUser = await User.create({ ...req.body, hashedPassword: hashed })
@@ -43,11 +44,10 @@ class ControllerUser {
     try{
 
       const user = req.authenticated.get()
-      console.log(user)
       
       let token = jwt.sign({ email: user.email, id: user.id }, secret, { expiresIn: "30h" })
       
-      res.json({ token })
+      return res.status(200).json({ token })
     }catch(e){
       return res.status(401).json({ error: e.message})
     }

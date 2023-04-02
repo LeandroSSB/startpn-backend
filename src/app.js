@@ -4,7 +4,7 @@ import cors from "cors"
 import routes from "./routes.js"
 import database from "./database/index.js"
 
-console.log()
+
 
 class App {
   constructor() {

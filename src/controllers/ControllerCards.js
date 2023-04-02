@@ -36,6 +36,27 @@ class ControllerCards {
     }
 
   }
+
+  async put(req, res) {
+    try{
+      const { id } = req.authenticated
+      
+      const { name } = req.body
+
+
+      const card = await Cards.findOne({ UserId: id, name: name })
+  
+      card.update(req.body)
+      card.save()
+
+      
+      return res.status(200).send(card)
+    }catch(error) {
+      return res.status(500).json({ message: error.message })
+    }
+  }
+  
+
 }
 
 export default new ControllerCards

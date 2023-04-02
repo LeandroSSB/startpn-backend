@@ -14,7 +14,7 @@ export default async (req, res, next) => {
     return res.status(401).json({ error: "Email ou senha inválidos" })
   } 
 
-  const match = bcrypt.compareSync(password, user.hashedPassword )
+  const match = bcrypt.compareSync(password, user.hashedPassword)
 
   if(!match) {
     return res.status(401).json({ error: "Email ou senha inválidos" })
@@ -22,5 +22,5 @@ export default async (req, res, next) => {
 
   req.authenticated = user
 
-  next()
+  return next()
 }
