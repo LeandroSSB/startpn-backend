@@ -17,7 +17,7 @@ class Database{
     this.connection = new Sequelize(database)
     
     await Promise.all(models.map(model => {
-      model.init(this.connection)
+       model.init(this.connection)
     }));
     
     Users.hasMany(Categories)

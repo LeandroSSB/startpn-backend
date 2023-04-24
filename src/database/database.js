@@ -3,15 +3,15 @@ dotenv.config()
 
 export default {
   dialect: "postgres",
-  host: "localhost",
-  username: process.env.user,
-  password: process.env.password,
-  database: process.env.database,
+  host: "postgres",
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
   port: 5432,
 
   pool: {
     max:5,
     min: 0,
     idle: 10000
-  }
+  },
 }

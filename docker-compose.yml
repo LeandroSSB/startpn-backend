@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:15.2
+    container_name: postgres
+    env_file: .env
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresdata:/app/mongo
+  
+  node:
+    build: .
+    container_name: node
+    env_file: .env
+    volumes:
+      - ./:/app
+    ports:
+      - 5000:5000
+    depends_on:
+      - postgres
+
+volumes:
+  postgresdata:

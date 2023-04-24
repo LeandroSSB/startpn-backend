@@ -25,16 +25,10 @@ class ControllerUser {
   }
   async postUser(req, res){
     try {
-      const { password, } = req.body
-      console.log(req.body)
-
-      const hashed = bcrypt.hashSync(password, 10)
-
-      const newUser = await User.create({ ...req.body, hashedPassword: hashed })
+      const newUser = await User.create(...req.body)
       await newUser.save()
-      const {hashedPassword, ...output} = newUser.get()
       
-      return res.status(201).send(output)
+      return res.status(201).send(newUser.get())
 
     }catch(e) {
       return res.status(400).json({error: "Invalid fields" + e})

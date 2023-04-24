@@ -9,7 +9,7 @@ export default class Cards extends Model{
         allowNull: false
       },
       content: {
-        type: DataTypes.STRING(25000),
+        type: DataTypes.STRING,
         allowNull: false
       }
     },
