@@ -1,31 +1,32 @@
 import jwt from "jsonwebtoken"
 import { promisify } from "util"
 import dotenv from "dotenv"
+import { ErrorHandler } from "../utils/error.js"
 dotenv.config()
 
 export default async (req, res, next) => {
 
+  try {
   const authHeader = req.headers.authorization || req.headers.Authorization
 
   
   if(!authHeader){
-    return res.status(401).json({ error: "Token inválido" })
+    throw new ErrorHandler({ statusCode: 401, message: "Token inválido" })
   }
   
   const [, token ] = authHeader.split(' ')
   console.log(token)
   
-  try {
     jwt.verify(token, process.env.TOKEN_CLIENT, (err, decoded) => {
       if (err) {
-        throw Error("Token Inválido")
+        throw new ErrorHandler({ statusCode: 401, message: err.message })
       }
       req.authenticated = decoded
     })
 
     return next()
   } catch(error){
-    return res.status(401).json({ error: "Token inválido" })
+    return next(error)
   }
 
 }

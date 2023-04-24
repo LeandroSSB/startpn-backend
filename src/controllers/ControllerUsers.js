@@ -3,38 +3,42 @@ import dotenv from "dotenv"
 import crypto from "crypto"
 import database from "./../database/index.js"
 import bcrypt from "bcrypt"
+import { ErrorHandler } from "../utils/error.js"
 dotenv.config()
 
 const secret = process.env.TOKEN_CLIENT
 const User = database.models.Users
 
 class ControllerUser {
-  async getUser(req, res) {
+  async getUser(req, res, next) {
     try{
       const { email } = req.authenticated
       
       const user = await User.findOne({ email })
-        
-      const {hashedPassword, ...data} = user.get()
+      if(!user) {
+        throw new ErrorHandler({statusCode: 404, message: "Token refering to a inexistent user"})
+      }
       
-      return res.status(200).send(data)
+      return res.status(200).send(user.get())
     }catch(e) {
-      return res.status(500).json({ error: e.message })
+      return next(e)
     }
 
   }
-  async postUser(req, res){
+  async postUser(req, res, next){
     try {
-      const newUser = await User.create(...req.body)
+      const newUser = await User.create(req.body)
       await newUser.save()
       
-      return res.status(201).send(newUser.get())
+      const { password, ...output } = newUser.get() 
+      
+      return res.status(201).send(output)
 
     }catch(e) {
-      return res.status(400).json({error: "Invalid fields" + e})
+      return next(e)
     }
   }
-  async login(req, res){
+  async login(req, res, next){
     try{
 
       const user = req.authenticated.get()
@@ -43,10 +47,10 @@ class ControllerUser {
       
       return res.status(200).json({ token })
     }catch(e){
-      return res.status(401).json({ error: e.message})
+      return next(error)
     }
   }
-  async update(req, res){
+  async update(req, res, next){
     try{
       const { email } = req.authenticated
       
@@ -60,7 +64,7 @@ class ControllerUser {
       
       return res.status(200).send(data)
     }catch(error) {
-      return res.status(500).json({ message: error.message })
+      return next(error)
     }
   }
 }
